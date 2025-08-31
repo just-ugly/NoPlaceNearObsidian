@@ -1,0 +1,7 @@
+{
+  "key.noplacenearportal.toggle": "Вкл/Вык ограничение",
+  "category.noplacenearportal.general": "No Place Near Portal",
+  "noplacenearportal.message": "Блок портала спасён!",
+  "noplacenearportal.switch.enabled": "Защита портала: вкл",
+  "noplacenearportal.switch.disabled": "Защита портала: выкл"
+}

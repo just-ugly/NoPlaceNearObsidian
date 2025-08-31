@@ -12,7 +12,7 @@
   "icon": "assets/noplacenearportal/textures/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "NoPlaceNearPortal.NoPlaceNearPortalMod"
     ]
   },

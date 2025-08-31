@@ -1,4 +1,6 @@
 {
   "key.noplacenearportal.toggle": "切换传送门方块限制",
-  "category.noplacenearportal.general": "传送门方块限制"
+  "category.noplacenearportal.general": "传送门方块限制",
+  "noplacenearportal.switch.enabled": "传送门周围方块限制: 开启",
+  "noplacenearportal.switch.disabled": "传送门周围方块限制: 关闭"
 }
