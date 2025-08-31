@@ -1,23 +1,20 @@
 package NoPlaceNearPortal;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.BlockItem;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import org.lwjgl.glfw.GLFW;
 
-import java.util.Arrays;
-
-public class NoPlaceNearPortalMod implements ClientModInitializer {
+public class NoPlaceNearPortalMod implements ModInitializer {
     private static boolean isEnabled = true;
     private KeyBinding toggleBinding;
 
@@ -37,22 +34,22 @@ public class NoPlaceNearPortalMod implements ClientModInitializer {
         // 如果是X轴传送门（东西向），阻止南北方向
         // 如果是Z轴传送门（南北向），阻止东西方向
         if (dy == 0) {
-
-            return Arrays.equals(portalState.get(NetherPortalBlock.AXIS).getDirections(), Direction.Axis.X.getDirections()) ?
-                    Math.abs(dx) == 1 && dz == 0 : Math.abs(dz) == 1 && dx == 0;
-
+            if ((Math.abs(dx) == 0 && Math.abs(dz) == 1) ||
+                (Math.abs(dx) == 1 && Math.abs(dz) == 0)) {
+                return true;
+            }
         }
 
         return false;
     }
 
     @Override
-    public void onInitializeClient() {
+    public void onInitialize() {
         // 注册快捷键
         toggleBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.noplacenearportal.toggle",
             InputUtil.Type.KEYSYM,
-            -1, // 默认使用V键
+            GLFW.GLFW_KEY_V, // 默认使用V键
             "category.noplacenearportal.general"
         ));
 
@@ -61,7 +58,7 @@ public class NoPlaceNearPortalMod implements ClientModInitializer {
             if (toggleBinding.wasPressed()) {
                 isEnabled = !isEnabled;
                 if (client.player != null) {
-                    client.player.sendMessage(Text.translatable(isEnabled ? "noplacenearportal.switch.enabled" : "noplacenearportal.switch.disabled"), true);
+                    client.player.sendMessage(Text.literal("传送门周围方块限制: " + (isEnabled ? "开启" : "关闭")), true);
                 }
             }
         });
@@ -90,7 +87,7 @@ public class NoPlaceNearPortalMod implements ClientModInitializer {
                     if (checkState.getBlock() == Blocks.NETHER_PORTAL) {
                         if (isPortalSide(placementPos, checkPos, checkState)) {
                             if (player.getWorld().isClient) {
-                                player.sendMessage(Text.translatable("noplacenearportal.message"), true);
+                                player.sendMessage(Text.literal("无法在传送门侧边放置方块！"), true);
                             }
                             return ActionResult.FAIL;
                         }
